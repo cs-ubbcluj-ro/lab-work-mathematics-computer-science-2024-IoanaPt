@@ -1,0 +1,113 @@
+<program> ::= "START" <statements> "STOP"   //program starts with "start" and ends with "stop"
+
+<statements> ::= <statement> <statements> 
+               | <empty>
+
+<statement> ::= <declaration>
+	      | <constant_declaration>
+              | <struct_declaration>
+              | <assignment>
+              | <input_statement>
+              | <output_statement>
+              | <if_statement>
+              | <for_loop>
+
+<declaration> ::= "DECLARE" <variable_list>   //declares one or more variables 
+
+<variable_list> ::= <identifier> "," <variable_list>   //defines a list of variables 
+                  | <identifier>
+
+<assignment> ::= "SET" <identifier> "=" <expression>   
+
+<input_statement> ::= "INPUT" <identifier>  //reads user input
+
+<output_statement> ::= "OUTPUT" <string_literal> "," <expression>   //outputs an expression
+                     | "OUTPUT" <expression> 
+
+<if_statement> ::= "IF" <condition> "THEN" <statements> <else_clause> "ENDIF"   //conditional logic
+
+<else_clause> ::= "ELSE" <statements>
+                | <empty>
+
+<for_loop> ::= "FOR" <identifier> "=" <expression> "TO" <expression> "DO" <statements> "ENDFOR"  //loop
+
+<condition> ::= <expression> <relational_operator> <expression>   //relational and logical operators
+              | <condition> <logical_operator> <condition>
+
+<relational_operator> ::= ">" 
+                        | "<" 
+                        | ">=" 
+                        | "<=" 
+                        | "==" 
+                        | "!="
+
+<logical_operator> ::= "AND" 
+                     | "OR"
+
+<expression> ::= <term> <additive_operator> <expression>   //5 or 5+3 where 3 is the expression
+               | <term>
+
+<term> ::= <factor> <multiplicative_operator> <term>    //5 or 5*3
+         | <factor>
+
+<factor> ::= <identifier>
+           | <number>
+           | "(" <expression> ")"
+
+<additive_operator> ::= "+" 
+                      | "-"
+
+<multiplicative_operator> ::= "*" 
+                            | "/"
+
+<identifier> ::= <letter> <identifier_rest>   //it has to start with a letter but it can be followed by letter or digit
+
+<identifier_rest> ::= <letter_or_digit> <identifier_rest>
+                    | <empty>
+
+<letter> ::= "a" | "b" | "c" | ... | "z" | "A" | "B" | "C" | ... | "Z"
+
+<letter_or_digit> ::= <letter> | <digit>
+
+<digit> ::= "0" | "1" | "2" | ... | "9"
+
+<number> ::= <digit> <number_rest>
+
+<number_rest> ::= <digit> <number_rest>
+                | <empty>
+
+<string_literal> ::= "\"" <characters> "\""    //defines the quotes "string"
+
+<characters> ::= <character> <characters>    //defines strings of any length or empty
+               | <empty>
+
+<character> ::= any printable character except double-quote (")
+
+<constant_declaration> ::= "const" <type> <identifier> "=" <expression> ";"
+
+<type> ::= "int"
+         | "float"
+         | "string"
+         | "bool"
+         | <custom_type>
+
+<struct_declaration> ::= "struct" <identifier> "{" <struct_body> "};"
+
+<struct_body> ::= <type> <identifier> ";" <struct_body>
+                | <type> <identifier> ";"
+
+
+problem: //sum of n numbers
+START
+    DECLARE n, sum, i, num
+    SET sum = 0
+    
+    INPUT n
+    INPUT num
+    
+    FOR i = 1 TO n DO
+        SET sum = sum + num
+    ENDFOR
+    
+    OUTPUT "Sum of numbers is: ", sum
+STOP
