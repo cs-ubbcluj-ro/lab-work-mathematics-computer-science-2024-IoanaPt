@@ -1,0 +1,114 @@
+# this grammar defines the syntax of a minilanguage in a context free grammar (cfg) format
+S = <program>
+
+N = {<program>, <declaration_list>, <declaration>, <statement_list>, <statement>, 
+    <if_statement>, <while_statement>, <do_statement>, <expression>, 
+    <arithmetic_expression>, <relational_expression>, <identifier>, <constant>, 
+    <read_statement>, <write_statement>, <compound_statement>}
+# non terminals
+
+T = {int, float, struct, if, else, while, do, then, var, read, write, begin, end, 
+    +, -, *, /, %, :=, <, <=, ==, =>, >, <>, (, ), [, ], {, }, :, ;, ,, " "}
+# terminals
+P=
+# the top-level structure of a program
+<program> ::= <declarations> <statements>
+# a program consists of optional declarations followed by a sequence of statements
+
+
+<declarations> ::= <declaration> <declarations> 
+                | epsilon
+# declarations can be recursive or empty (epsilon)
+
+<declaration> ::= "int" <identifier> ";"
+                | "float" <identifier> ";"
+                | "struct" <identifier> "{" <declarations> "}" ";"
+# declarations allow variables of type int or float and structures containing other declarations
+
+
+<statements> ::= <statement> <statements> 
+              | epsilon
+# statements can be a sequence of individual statements or empty
+
+<statement> ::= <assignment> 
+              | <if_statement>
+              | <while_statement>
+              | <read_statement>
+              | <write_statement>
+              | <block>
+# statements include assignments, control flow, input/output operations, and blocks of code
+
+<assignment> ::= <identifier> ":=" <expression> ";"
+# assigns the result of an expression to an identifier
+
+# if statement
+<if_statement> ::= "if" "(" <condition> ")" "then" <statement> 
+                 | "if" "(" <condition> ")" "then" <statement> "else" <statement>
+
+<while_statement> ::= "while" "(" <condition> ")" <statement>
+# a while loop is a conditional iteration construct
+
+
+<read_statement> ::= "read" <identifier> ";"
+<write_statement> ::= "write" <expression> ";"
+# read is for input and write is for output
+
+<block> ::= "begin" <statements> "end"
+# blocks are delimited by begin and end
+
+
+<expression> ::= <term> <expression_prime>
+<expression_prime> ::= "+" <term> <expression_prime> 
+                     | "-" <term> <expression_prime> 
+                     | epsilon
+# expressions support addition and subtraction with recursion
+
+<term> ::= <factor> <term_prime>
+<term_prime> ::= "*" <factor> <term_prime>
+               | "/" <factor> <term_prime>
+               | "%" <factor> <term_prime>
+               | epsilon
+# terms support multiplication, division and modulus
+
+# factors
+<factor> ::= <identifier>
+           | <constant>
+           | "(" <expression> ")"
+# factors are identifiers, constants or parenthesized expressions
+
+
+<condition> ::= <expression> <relational_operator> <expression>
+# conditions compare two expressions using relational operators
+
+<relational_operator> ::= "<" | "<=" | "==" | ">=" | ">" | "<>"
+# relational operators include standard comparison operators
+
+<identifier> ::= "$" <letter> <letter_or_digit_list>
+<letter_or_digit_list> ::= <letter_or_digit> <letter_or_digit_list> | epsilon
+<letter_or_digit> ::= <letter> | <digit>
+# identifiers must start with a $ followed by letters and/or digits
+
+<constant> ::= <integer> | <float> | <string>
+# constants can be integers, floats or strings
+
+# integer constants
+<integer> ::= <signed_integer>
+<signed_integer> ::= "+" <unsigned_integer>
+                   | "-" <unsigned_integer>
+                   | <unsigned_integer>
+<unsigned_integer> ::= <digit> {<digit>}
+# integers can be signed or unsigned
+
+<float> ::= <signed_integer> "." <digit> {<digit>}
+# floats consist of a signed integer part followed by a decimal point and digits
+
+<string> ::= '"' {<char>} '"'
+# strings are between double quotes and consist of characters
+
+
+<letter> ::= "a" | "b" | ... | "z" | "A" | "B" | ... | "Z"
+<digit> ::= "0" | "1" | ... | "9"
+<letter_or_digit> ::= <letter> | <digit>
+<char> ::= <letter> | <digit> | <special_symbol>
+<special_symbol> ::= "+" | "-" | "*" | "/" | "%" | ":" | ";" | "," | "." | "(" | ")" | "[" | "]" | "{" | "}" | " "
+# characters include letters, digits and special symbols
